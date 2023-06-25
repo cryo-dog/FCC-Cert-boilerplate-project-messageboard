@@ -7,8 +7,43 @@ const cors        = require('cors');
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
+const helmet            = require("helmet");
+const helmetCsp         = require("helmet-csp");
+const mongoose          = require("mongoose");
 
 const app = express();
+
+// Cryo: Addes server security
+
+app.use(
+  helmet({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'"],
+      referrerPolicy: ['same-origin'], // Update the referrerPolicy value
+    },
+  })
+);
+
+// Cryo: Added DB connection
+mongoose.connect(process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', function() {
+  console.log('MongoDB database connection established successfully in server.js');
+});
+
+// Additional middleware to log and understand the required structure
+app.use((req, res, next) => {
+  console.log(`>>>\nReceived ${req.method} request at ${req.originalUrl}`);
+  console.log('Request Parameters:', req.params);
+  console.log('Query Parameters:', req.query);
+  console.log('Request Body:', req.body);
+  next(); // Call next() to pass control to the next middleware or route handler
+});
+
+// Cryo: End of server edits
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
