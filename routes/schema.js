@@ -32,7 +32,7 @@ const threadSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    "bumbed_on": {
+    "bumped_on": {
         type: Date,
         default: Date.now
     },
