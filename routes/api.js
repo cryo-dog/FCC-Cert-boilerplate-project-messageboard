@@ -28,7 +28,7 @@
         let text = req.body.text;
         let password = req.body.delete_password;
         let password_hashed = hashTXT(password)
-        console.log(`\n >>Post details are:\n board ${board}, \n text: ${text}, \n password ${password}`);
+        //console.log(`\n >>Post details are:\n board ${board}, \n text: ${text}, \n password ${password}`);
         // update or create new board
         try {
           let newThread = new ThreadModel(
@@ -48,10 +48,10 @@
         const board = req.params.board || req.query.board || req.body.board; // Read Board name
         const thread_id = req.query.thread_id ? req.query.thread_id : null;
         
-        console.log(` >>GET received for board: ${board}. Thread_id is: ${thread_id}`);
-        console.log("Directly accessed it is: ", req.params.board);
+        //console.log(` >>GET received for board: ${board}. Thread_id is: ${thread_id}`);
+        //console.log("Directly accessed it is: ", req.params.board);
 
-        console.log("   >> No thread_id in query! Limiting results...")
+        //console.log("   >> No thread_id in query! Limiting results...")
         ThreadModel.find({ "board": board })
           .sort({ bumped_on: 'desc' })
           .limit(10)
@@ -90,9 +90,6 @@
         
       })
       .put(async function (req, res) {
-        console.log("Body: ", req.body);
-        console.log("Query: ", req.query);
-        console.log("Params: ", req.params);
         
         let thread_id = req.body.report_id;
         let board = req.params.board;
@@ -104,7 +101,6 @@
             {"reported": true},
             {"new": true}
             );
-          console.log("Thread ", thread_id, " reported");
           res.status(200).send('reported');
         } catch (error) {
           console.error("Error reporting a thread: ", error);
@@ -115,12 +111,10 @@
         let thread_id = req.query.thread_id ? req.query.thread_id : req.body.thread_id
         let delete_password = req.query.delete_password ? req.query.delete_password : req.body.delete_password;
         let passwordHashed = hashTXT(delete_password);
-        console.log("  >> Delete request received for:\n","  TiD: ", thread_id, "\n delete_password hashed: ",passwordHashed);
         try {
           let deleted = await ThreadModel.deleteOne(
             {"_id": thread_id, "delete_password": passwordHashed}
           );
-          console.log("Deletion result: \n", deleted);
           if (deleted.deletedCount == 1) {
             res.status(200).send('success');
           } else {
@@ -141,10 +135,9 @@
         let password = req.body.delete_password;
         let password_hashed = hashTXT(password);
         let date_now = new Date();
-        console.log(`\n >>Post details are:\n thread_id: ${thread_id} \n board ${board}, \n text: ${text}, \n password ${password}`);
-
+        
         try {
-          console.log("Trying to create reply for board: ", board, " and thread_id: ", thread_id);
+          //console.log("Trying to create reply for board: ", board, " and thread_id: ", thread_id);
           existingBoard = await ThreadModel.findOneAndUpdate(
             {"board": board, "_id": thread_id},
             {
@@ -161,7 +154,7 @@
               new: true, upsert: true
             }
           )
-          console.log("New reply added to board: ", board, " thread: ", thread_id);
+          //console.log("New reply added to board: ", board, " thread: ", thread_id);
           res.redirect('/b/' + existingBoard.board + '/' + existingBoard._id + '/') ;
           
         } catch (error) {
@@ -174,7 +167,7 @@
         let thread_id = req.query.thread_id;
         const board = req.params.board || req.query.board || req.body.board; // Read Board name
 
-        console.log(`\n   >> Get replies received!\n    board: ${board}\n    thread_id: ${thread_id}`);
+        //console.log(`\n   >> Get replies received!\n    board: ${board}\n    thread_id: ${thread_id}`);
             ThreadModel
                 .find({_id: thread_id})
                 .sort({ bumped_on: 'desc' })
@@ -208,11 +201,11 @@
             // End of findOne Query
           })
         .delete( async function (req, res) {
-          console.log(">>>>req.body is:\n", req.body);
+          //console.log(">>>>req.body is:\n", req.body);
           const board = req.params.board;
           const {thread_id, reply_id, delete_password} = req.body;
           const password_hashed = hashTXT(delete_password);
-          console.log(`  >> Delete reply request received\n    board: ${board}\n    thread_id: ${thread_id}\n    reply_id: ${reply_id}\n    delete_password (hashed): ${password_hashed}`);
+          //console.log(`  >> Delete reply request received\n    board: ${board}\n    thread_id: ${thread_id}\n    reply_id: ${reply_id}\n    delete_password (hashed): ${password_hashed}`);
           
           // let's delete the reply by updating the one Thread that can be found
           let thread = ThreadModel.findOneAndU
@@ -259,7 +252,7 @@
         let board = req.params.board;
         let updated;
         
-        console.log(`   >> Received a PUT request for a REPLY:\n     Board: ${board}\n     thread_id: ${thread_id}\n     reply_id: ${reply_id}`);
+        //console.log(`   >> Received a PUT request for a REPLY:\n     Board: ${board}\n     thread_id: ${thread_id}\n     reply_id: ${reply_id}`);
         
         try {
           updated = await ThreadModel.findOneAndUpdate(
@@ -279,7 +272,7 @@
             },
             {"new": true}
             );
-          console.log("reply ", reply_id, " of thread ", thread_id," reported");
+          //console.log("reply ", reply_id, " of thread ", thread_id," reported");
           res.status(200).send('reported');
         } catch (error) {
           console.error("Error reporting a thread: ", error);
