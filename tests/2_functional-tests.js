@@ -150,7 +150,7 @@ suite('Functional Tests', function() {
   test('Viewing a single thread with all replies', function(done) {
     chai
       .request(server)
-      .get('/api/replies/{board}')
+      .get('/api/replies/test/')
       .query({ thread_id: threadID })
       .end(function(err, res) {
         assert.equal(res.status, 200);
@@ -165,7 +165,7 @@ suite('Functional Tests', function() {
   test('Reporting a reply', function(done) {
     chai
       .request(server)
-      .put('/api/replies/{board}')
+      .put('/api/replies/test/')
       .send({
         thread_id: threadID,
         reply_id: replyID
@@ -182,7 +182,7 @@ suite('Functional Tests', function() {
     test('Deleting a reply with the incorrect password', function(done) {
       chai
         .request(server)
-        .delete('/api/replies/{board}')
+        .delete('/api/replies/test/')
         .send({
           thread_id: threadID,
           reply_id: replyID,
@@ -199,7 +199,7 @@ suite('Functional Tests', function() {
     test('Deleting a reply with the correct password', function(done) {
       chai
         .request(server)
-        .delete('/api/replies/{board}')
+        .delete('/api/replies/test/')
         .send({
           thread_id: threadID,
           reply_id: replyID,
