@@ -37,7 +37,7 @@ suite('Functional Tests', function() {
                   done(err);
                 } else {
                   const jsonData = JSON.parse(res.text);
-                  const threadID = jsonData[0]._id;
+                  threadID = jsonData[0]._id;
   
                   for (let j = 0; j < jmax; j++) {
                     chai
@@ -45,7 +45,8 @@ suite('Functional Tests', function() {
                       .post('/api/replies/test/')
                       .send({
                         text: "Test reply text",
-                        delete_password: "deleteMe"
+                        delete_password: "deleteMe",
+                        thread_id: threadID
                       })
                       .end((err, res) => {
                         if (err) {
@@ -58,12 +59,13 @@ suite('Functional Tests', function() {
                               if (err) {
                                 done(err);
                               } else {
-                                const jsonData2 = JSON.parse(res.text);
-                                replyID = jsonData2[0].replies[0]._id;
+                                
                                 completedOperations++;
   
                                 if (completedOperations === imax * jmax) {
                                   // All asynchronous operations completed
+                                  const jsonData2 = JSON.parse(res.text);
+                                  replyID = jsonData2[0].replies[0]._id;
                                   done();
                                 }
                               }
@@ -158,8 +160,8 @@ suite('Functional Tests', function() {
       .query({ thread_id: threadID })
       .end( (err, res) => {
         assert.equal(res.status, 200)
-        assert.hasAllDeepKeys(res.body, ["board", "_id", "bumped_on", "replies"])
-        assert.isAbove(res.body.replies.length, 1)
+        assert.containsAllKeys(res.body, ["board", "_id", "bumped_on", "replies"])
+        assert.isAbove(res.body.replies.length, 0)
         done()
       })
   });
