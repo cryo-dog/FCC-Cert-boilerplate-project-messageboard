@@ -37,7 +37,6 @@ db.once('open', function() {
 // Additional middleware to log and understand the required structure
 app.use((req, res, next) => {
   console.log(`>>>\nReceived ${req.method} request at ${req.originalUrl}`);
-  console.log('Request Parameters:', req.params);
   console.log('Query Parameters:', req.query);
   console.log('Request Body:', req.body);
   next(); // Call next() to pass control to the next middleware or route handler
