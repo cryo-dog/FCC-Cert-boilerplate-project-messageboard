@@ -15,16 +15,15 @@ const app = express();
 
 // Cryo: Addes server security
 
-app.use(
-  helmet({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'"],
-      referrerPolicy: ['same-origin'], // Update the referrerPolicy value
-    },
-  })
-);
+app.use(helmet.frameguard({
+	action: 'sameorigin'
+}))
+app.use(helmet.dnsPrefetchControl({
+	allow: false
+}))
+app.use(helmet.referrerPolicy({
+	policy: 'same-origin'
+}))
 
 // Cryo: Added DB connection
 mongoose.connect(process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true });
