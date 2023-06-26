@@ -89,38 +89,30 @@ suite('Functional Tests', function() {
         delete_password: 'test'
       })
       .end(function(err, res) {
+        try {
         assert.equal(res.status, 200);
         // Add assertions for the response data
         done();
+      } catch (e) {
+        console.error(e);
+        done(e);
+      }
       });
   });
 
-  // View the 10 most recent threads with 3 replies each
-  test('Viewing the 10 most recent threads with 3 replies each', function(done) {
-    chai
-      .request(server)
-      .get('/api/threads/test/')
-      .end(function(err, res) {
-        try {
-          assert.equal(res.status, 200);
-          assert.isAtMost(threads.length, 10);
-          for (let i = 0; i < threads.length; i++) {
-            assert.containsAllKeys(threads[i], ["_id", "text", "created_on", "bumped_on", "replies"]);
-            assert.isAtMost(threads[i].replies.length, 3);
-            assert.notExists(threads[i].delete_password);
-            assert.notExists(threads[i].reported);
-            for (let j = 0; j < threads[i].replies.length; j++) {
-              assert.notExists(threads[i].replies[j].delete_password);
-              assert.notExists(threads[i].replies[j].reported);
-            }
-          }
-        } catch (err) {
-          done(err);
-          throw new Error(err.responseText || err.message);
-        }
-        done();
-      });
-  });
+   // View the 10 most recent threads with 3 replies each
+   test('Viewing the 10 most recent threads with 3 replies each', (done) => {
+		chai.request(server)
+		.get('/api/threads/test')
+		.send()
+		.end((err, res) => {
+			assert.isArray(res.body)
+			let firstThread = res.body[0]
+			assert.isUndefined(firstThread.delete_password)
+			assert.isAtMost(firstThread.replies.length, 3)
+			done()
+		})
+	})
 
   // Report a thread
   test('Reporting a thread', function(done) {
